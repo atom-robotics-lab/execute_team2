@@ -18,7 +18,16 @@
   }
   
   .btn-primary {
-    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 hover:scale-105 transform transition-transform duration-200;
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 hover:scale-105 transform transition-transform duration-200 relative overflow-hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-red-400 to-red-600 opacity-0 transition-opacity duration-300;
+  }
+
+  .btn-primary:hover::after {
+    @apply opacity-100;
   }
 
   .upload-zone {
@@ -27,6 +36,54 @@
 
   .upload-zone-dragging {
     @apply border-red-500 bg-red-50;
+  }
+
+  .feature-card {
+    @apply relative overflow-hidden rounded-xl p-6 transform transition-all duration-500 ease-out;
+  }
+
+  .feature-card-active {
+    @apply ring-4 ring-red-500 bg-red-50;
+  }
+
+  .feature-card-clickable {
+    @apply hover:shadow-xl hover:scale-105 hover:bg-red-50;
+  }
+
+  .feature-card:hover .feature-icon {
+    @apply text-red-600 transform scale-110;
+  }
+
+  .feature-card dt {
+    @apply relative flex items-center;
+  }
+
+  .feature-card dd {
+    @apply mt-2 text-base text-gray-500;
+  }
+
+  .feature-icon {
+    @apply absolute flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-br from-red-500 to-red-700 text-white transition-all duration-300;
+  }
+
+  .alert-detail-enter {
+    @apply animate-fade-in;
+  }
+
+  .alert-detail-exit {
+    @apply animate-fade-out;
+  }
+
+  .evidence-detail {
+    @apply transition-all duration-300 ease-in-out;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  .evidence-detail-expanded {
+    @apply opacity-100;
+    max-height: 2000px;
   }
 }
 
@@ -40,6 +97,86 @@
 
 .border-b-2.border-primary-500 {
   border-bottom-color: rgb(239, 68, 68);
+}
+
+/* Grid Pattern Background */
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Animated Background Stripes */
+.bg-stripes {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.1) 25px,
+    transparent 25px,
+    transparent 50px
+  );
+  background-size: 70.71px 70.71px;
+}
+
+@keyframes slide {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide {
+  animation: slide 20s linear infinite;
+}
+
+/* Glowing Text Animation */
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.5),
+                 0 0 40px rgba(239, 68, 68, 0.3),
+                 0 0 60px rgba(239, 68, 68, 0.2);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.3),
+                 0 0 20px rgba(239, 68, 68, 0.2),
+                 0 0 30px rgba(239, 68, 68, 0.1);
+  }
+}
+
+.animate-glow-red {
+  animation: glow 3s ease-in-out infinite;
+}
+
+/* Slow Pulse Animation */
+@keyframes pulseSlow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulseSlow 3s ease-in-out infinite;
+}
+
+/* Modal Animations */
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-enter {
+  animation: modalEnter 0.3s ease-out forwards;
 }
 
 /* Alert animations */
@@ -66,24 +203,24 @@
 }
 
 .alert-enter {
-  animation: slideIn 0.3s ease-out;
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .alert-exit {
-  animation: slideOut 0.3s ease-in;
+  animation: slideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Upload component styles */
 .upload-container {
-  @apply max-w-xl mx-auto p-6 bg-white rounded-lg shadow-lg;
+  @apply max-w-xl mx-auto p-6 bg-white/90 backdrop-blur-sm rounded-lg shadow-xl border border-white/20;
 }
 
 .upload-icon {
-  @apply mx-auto h-12 w-12 text-gray-400 transition-colors duration-200;
+  @apply mx-auto h-12 w-12 text-gray-400 transition-all duration-300 transform group-hover:scale-110 group-hover:text-red-500;
 }
 
 .upload-text {
-  @apply mt-2 text-sm text-gray-600;
+  @apply mt-2 text-sm text-gray-600 font-medium;
 }
 
 .upload-subtext {
@@ -91,9 +228,112 @@
 }
 
 .upload-loading {
-  @apply absolute inset-0 bg-black/10 backdrop-blur-sm rounded-lg flex items-center justify-center;
+  @apply absolute inset-0 bg-black/20 backdrop-blur-sm rounded-lg flex items-center justify-center;
 }
 
 .upload-loading-spinner {
-  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-red-500;
+  @apply animate-spin rounded-full h-8 w-8 border-2 border-red-500 border-t-transparent;
+}
+
+/* Evidence Details Animations */
+@keyframes expandEvidence {
+  from {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    max-height: 2000px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.evidence-expand {
+  animation: expandEvidence 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Progress Bar Animation */
+@keyframes progress {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+.progress-animate {
+  animation: progress 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Confidence Indicator Animation */
+@keyframes pulseBorder {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.confidence-indicator {
+  animation: pulseBorder 2s infinite;
+}
+
+/* Hover Effects */
+.hover-glow {
+  @apply transition-all duration-300;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3),
+              0 0 40px rgba(239, 68, 68, 0.2);
+}
+
+/* Gradient Text */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-red-800;
+}
+
+/* Glass Effect */
+.glass-effect {
+  @apply backdrop-blur-lg bg-white/10 border border-white/20;
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .animate-fade-out {
+    animation: fadeOut 0.2s ease-in;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
 }
