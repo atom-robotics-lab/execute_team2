@@ -7,7 +7,11 @@ interface FeatureCard {
   color: string;
 }
 
-export const LandingPage = () => {
+interface LandingPageProps {
+  onHeatmapClick: () => void;
+}
+
+export function LandingPage({ onHeatmapClick }: LandingPageProps) {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   const features: FeatureCard[] = [
@@ -95,11 +99,16 @@ export const LandingPage = () => {
           {features.map((feature, index) => (
             <div
               key={index}
-              className={`relative overflow-hidden rounded-xl p-6 bg-gradient-to-br ${feature.color} transform transition-all duration-300 ease-in-out ${
+              className={`relative overflow-hidden rounded-xl p-6 bg-gradient-to-br ${feature.color} transform transition-all duration-300 ease-in-out cursor-pointer ${
                 hoveredCard === index ? 'scale-105' : ''
               }`}
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
+              onClick={() => {
+                if (feature.title === "Misinformation Heatmap") {
+                  onHeatmapClick();
+                }
+              }}
             >
               <div className="relative z-10">
                 <span className="text-4xl mb-4 block">{feature.icon}</span>
@@ -135,4 +144,4 @@ export const LandingPage = () => {
       </footer>
     </div>
   );
-}; 
+} 
