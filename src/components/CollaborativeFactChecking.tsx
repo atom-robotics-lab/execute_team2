@@ -200,10 +200,10 @@ const activeUsers = [
 
 export function CollaborativeFactChecking({ onClose }: FactCheckingProps) {
   const [stories, setStories] = useState<Story[]>(sampleStories);
-  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const [userVotes, setUserVotes] = useState<Record<string, keyof Story['votes']>>({});
   const [totalActiveUsers] = useState(234); // Simulated total active users
   const [filter, setFilter] = useState<'all' | 'pending' | 'verified' | 'debunked'>('all');
+  const [activeTab, setActiveTab] = useState('trending');
 
   const handleVote = (storyId: string, voteType: keyof Story['votes']) => {
     if (userVotes[storyId]) return; // User has already voted

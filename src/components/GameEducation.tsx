@@ -167,7 +167,7 @@ export function GameEducation({ onClose }: GameEducationProps) {
   const [highScore, setHighScore] = useState(0);
   const [points, setPoints] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [soundEnabled] = useState(true);
 
   const currentQuestion = sampleQuestions[currentQuestionIndex];
   const confettiRef = useRef<HTMLCanvasElement>(null);
@@ -262,7 +262,7 @@ export function GameEducation({ onClose }: GameEducationProps) {
       
       <div className="fixed top-4 right-4 flex items-center space-x-4 z-40">
         <button
-          onClick={() => setSoundEnabled(!soundEnabled)}
+          onClick={() => {}}
           className="p-2 rounded-lg hover:bg-white/10 transition-colors"
         >
           {soundEnabled ? '🔊' : '🔇'}

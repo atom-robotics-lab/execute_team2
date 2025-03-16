@@ -85,4 +85,32 @@ export async function analyzeMedia(file: File): Promise<AnalysisResult> {
     console.error('Analysis failed:', error);
     throw error;
   }
+}
+
+export async function analyzeImage(imageData: ImageData): Promise<{
+  isManipulated: boolean;
+  confidence: number;
+  details: Array<{ label: string; value: number }>;
+}> {
+  // Convert ImageData to tensor
+  const tensor = tf.browser.fromPixels(imageData);
+  const resized = tf.image.resizeBilinear(tensor as tf.Tensor3D, [224, 224]);
+  const normalized = resized.div(255.0);
+  const batched = normalized.expandDims(0);
+
+  // Cleanup tensors
+  tensor.dispose();
+  resized.dispose();
+  normalized.dispose();
+
+  // Return mock analysis for now
+  return {
+    isManipulated: Math.random() > 0.5,
+    confidence: 0.85 + Math.random() * 0.1,
+    details: [
+      { label: 'Manipulation Detection', value: 0.92 },
+      { label: 'GAN Detection', value: 0.88 },
+      { label: 'Metadata Analysis', value: 0.95 },
+    ],
+  };
 } 

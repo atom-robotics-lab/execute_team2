@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { BlockchainAuthModal } from './BlockchainAuthModal';
 
 interface FeatureCard {
   title: string;
@@ -9,6 +10,7 @@ interface FeatureCard {
     value: string;
     label: string;
   };
+  onClick?: () => void;
 }
 
 interface LandingPageProps {
@@ -26,11 +28,11 @@ interface AnalysisResult {
 }
 
 export function LandingPage({ onFeatureClick }: LandingPageProps) {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [animatedStats, setAnimatedStats] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showMediaModal, setShowMediaModal] = useState(false);
+  const [showBlockchainModal, setShowBlockchainModal] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -72,7 +74,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "98%",
         label: "Detection Accuracy"
-      }
+      },
+      onClick: () => setShowMediaModal(true)
     },
     {
       title: "Explainable Misinformation Alerts",
@@ -82,7 +85,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "500K+",
         label: "Daily Alerts"
-      }
+      },
+      onClick: () => onFeatureClick("Explainable Misinformation Alerts")
     },
     {
       title: "Collaborative Fact-Checking",
@@ -92,7 +96,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "50K+",
         label: "Active Checkers"
-      }
+      },
+      onClick: () => onFeatureClick("Collaborative Fact-Checking")
     },
     {
       title: "Blockchain Authentication",
@@ -102,7 +107,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "1M+",
         label: "Verified Records"
-      }
+      },
+      onClick: () => setShowBlockchainModal(true)
     },
     {
       title: "Misinformation Heatmap",
@@ -112,7 +118,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "180+",
         label: "Countries Covered"
-      }
+      },
+      onClick: () => onFeatureClick("Misinformation Heatmap")
     },
     {
       title: "Gamified Education",
@@ -122,7 +129,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "2M+",
         label: "Active Players"
-      }
+      },
+      onClick: () => onFeatureClick("Gamified Education")
     }
   ];
 
@@ -426,15 +434,7 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
             <div
               key={index}
               className={`group relative overflow-hidden rounded-xl p-6 bg-gradient-to-br ${feature.color} transform transition-all duration-300 ease-in-out hover:scale-105 cursor-pointer`}
-              onMouseEnter={() => setHoveredCard(index)}
-              onMouseLeave={() => setHoveredCard(null)}
-              onClick={() => {
-                if (feature.title === "AI-Powered Media Detection") {
-                  setShowMediaModal(true);
-                } else {
-                  onFeatureClick(feature.title);
-                }
-              }}
+              onClick={feature.onClick || (() => onFeatureClick(feature.title))}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-black/0 via-black/0 to-black/20 z-0 
                 group-hover:via-black/10 transition-all duration-300"></div>
@@ -691,6 +691,14 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Blockchain Auth Modal */}
+      {showBlockchainModal && (
+        <BlockchainAuthModal
+          isOpen={showBlockchainModal}
+          onClose={() => setShowBlockchainModal(false)}
+        />
       )}
     </div>
   );

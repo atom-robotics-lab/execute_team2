@@ -1,7 +1,8 @@
 import OpenAI from 'openai';
 import axios from 'axios';
 
-export interface Story {
+interface Story {
+  id: string;
   title: string;
   description: string;
   spread: number;
@@ -9,9 +10,13 @@ export interface Story {
   region: string;
   coordinates: [number, number];
   sources: string[];
-  verificationStatus: 'fake' | 'likely_fake' | 'unverified' | 'likely_true' | 'true';
+  verificationStatus: 'fake' | 'real' | 'unverified' | 'investigating' | 'debunked';
   dateDetected: string;
-  category: string;
+  votes: {
+    credible: number;
+    suspicious: number;
+    fake: number;
+  };
 }
 
 class StoryDetectionService {
@@ -173,8 +178,26 @@ class StoryDetectionService {
   private getSampleStories(): Story[] {
     return [
       {
-        title: "Sample Fake Story 1",
-        description: "This is a sample fake story for testing purposes",
+        id: '1',
+        title: 'Breaking News Story',
+        description: 'Important development in current events',
+        spread: 85,
+        confidence: 0.92,
+        region: 'North America',
+        coordinates: [37.7749, -122.4194],
+        sources: ['source1.com', 'source2.com'],
+        verificationStatus: 'investigating',
+        dateDetected: new Date().toISOString(),
+        votes: {
+          credible: 150,
+          suspicious: 50,
+          fake: 20
+        }
+      },
+      {
+        id: '2',
+        title: 'Sample Fake Story 1',
+        description: 'This is a sample fake story for testing purposes',
         spread: 75,
         confidence: 85,
         region: "US",
@@ -182,11 +205,16 @@ class StoryDetectionService {
         sources: ["https://example.com"],
         verificationStatus: "fake",
         dateDetected: new Date().toISOString(),
-        category: "political"
+        votes: {
+          credible: 100,
+          suspicious: 0,
+          fake: 0
+        }
       },
       {
-        title: "Sample Fake Story 2",
-        description: "Another sample fake story for testing",
+        id: '3',
+        title: 'Sample Fake Story 2',
+        description: 'Another sample fake story for testing',
         spread: 60,
         confidence: 75,
         region: "GB",
@@ -194,10 +222,59 @@ class StoryDetectionService {
         sources: ["https://example.com"],
         verificationStatus: "likely_fake",
         dateDetected: new Date().toISOString(),
-        category: "health"
+        votes: {
+          credible: 50,
+          suspicious: 0,
+          fake: 0
+        }
       }
     ];
   }
 }
 
-export const storyDetectionService = new StoryDetectionService(); 
+export const storyDetectionService = new StoryDetectionService();
+
+export function detectStories(content: string): Story[] {
+  // Mock implementation
+  const stories: Story[] = [
+    {
+      id: '1',
+      title: 'Breaking News Story',
+      description: 'Important development in current events',
+      spread: 85,
+      confidence: 0.92,
+      region: 'North America',
+      coordinates: [37.7749, -122.4194],
+      sources: ['source1.com', 'source2.com'],
+      verificationStatus: 'investigating',
+      dateDetected: new Date().toISOString(),
+      votes: {
+        credible: 150,
+        suspicious: 50,
+        fake: 20
+      }
+    }
+  ];
+
+  return stories.sort((a, b) => b.spread - a.spread);
+}
+
+export function analyzeStoryContent(content: string): {
+  sentiment: number;
+  topics: string[];
+  entities: string[];
+  credibilityScore: number;
+} {
+  // Mock implementation
+  return {
+    sentiment: 0.75,
+    topics: ['politics', 'technology'],
+    entities: ['Organization A', 'Person B'],
+    credibilityScore: 0.85
+  };
+}
+
+export function validateSource(url: string): Promise<boolean> {
+  // Mock implementation
+  return Promise.resolve(true);
+} 
