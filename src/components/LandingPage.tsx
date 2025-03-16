@@ -265,8 +265,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
               <div className="aspect-video rounded-t-xl overflow-hidden bg-black">
                 <iframe
                   className="w-full h-full"
-                  src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0"
-                  title="Product Demo"
+                  src="https://www.youtube.com/embed/DhysUu854PI?autoplay=0"
+                  title="TruthGuard Demo"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>

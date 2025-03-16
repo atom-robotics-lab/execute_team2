@@ -1,36 +1,65 @@
-# Misinformation Heatmap Visualization
+# TruthGuard - Combat Digital Misinformation
 
-An interactive web application that visualizes the spread of misinformation across the globe using a heatmap and analytics dashboard.
+![TruthGuard Logo](public/truthguard-logo.png)
 
-## Features
+TruthGuard is a cutting-edge platform designed to combat digital misinformation through advanced AI technology and blockchain authentication. Our platform provides real-time detection and verification of potentially manipulated media content, helping users identify and prevent the spread of fake news.
 
-- **Global Heatmap**: Visualize the spread of misinformation across different regions
-- **Analytics Dashboard**: Track key metrics and trends
-- **Story Tracking**: Monitor specific misinformation stories and their spread
-- **Interactive UI**: Modern, responsive design with real-time updates
+## 🚀 Features
 
-## Tech Stack
+### 1. AI-Powered Media Detection
+- Advanced deep learning algorithms for detecting manipulated images and videos
+- Real-time analysis with 98% detection accuracy
+- Detailed forensic analysis reports
+- GAN-generated content detection
 
-- React + TypeScript
-- Vite
-- Leaflet for map visualization
-- D3.js for data visualization
-- Tailwind CSS for styling
-- Headless UI for accessible components
+### 2. Blockchain Authentication
+- Immutable storage of original content
+- Cryptographic signatures for each piece of content
+- Track content modifications over time
+- Verify source authenticity
+- Interactive file upload with drag-and-drop support
+- Real-time verification status and progress tracking
 
-## Getting Started
+### 3. Explainable Misinformation Alerts
+- Detailed explanations of detected patterns
+- Visual evidence and technical analysis
+- Real-time notification system
+- Risk assessment scoring
 
-### Prerequisites
+### 4. Collaborative Fact-Checking
+- Community-driven verification system
+- Expert fact-checker network
+- Source credibility tracking
+- Reputation system for contributors
 
-- Node.js (v18 or higher)
-- npm (v8 or higher)
+### 5. Misinformation Heatmap
+- Global tracking of misinformation spread
+- Regional impact analysis
+- Trend monitoring and forecasting
+- Interactive visualization
 
-### Installation
+## 🛠️ Technology Stack
+
+- **Frontend:**
+  - React.js with TypeScript
+  - Tailwind CSS for styling
+  - Framer Motion for animations
+  - Vite for build tooling
+
+- **AI Components:**
+  - TensorFlow.js for client-side AI processing
+  - Custom deep learning models for media analysis
+
+- **Blockchain Integration:**
+  - Distributed ledger technology for content verification
+  - Smart contracts for automated authentication
+
+## 📦 Installation
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd misinformation-heatmap
+git clone https://github.com/your-username/truthguard.git
+cd truthguard
 ```
 
 2. Install dependencies:
@@ -43,40 +72,35 @@ npm install
 npm run dev
 ```
 
-4. Open your browser and navigate to `http://localhost:5173`
+## 🔧 Configuration
 
-## Project Structure
-
-```
-src/
-  ├── components/
-  │   └── AnalyticsDashboard.tsx
-  ├── App.tsx
-  ├── main.tsx
-  └── index.css
+Create a `.env` file in the root directory with the following variables:
+```env
+VITE_API_URL=your_api_url
+VITE_BLOCKCHAIN_NODE=your_blockchain_node
+VITE_AI_MODEL_PATH=your_model_path
 ```
 
-## Features in Detail
+## 🚀 Usage
 
-### Global Heatmap
-- Interactive world map showing misinformation spread
-- Color-coded intensity based on spread rate
-- Click to zoom and pan
-- Real-time updates
+1. **Media Analysis:**
+   - Upload images or videos through drag-and-drop
+   - View real-time analysis results
+   - Get detailed manipulation detection reports
 
-### Analytics Dashboard
-- Key metrics visualization
-- Spread over time charts
-- Category distribution
-- Engagement metrics
+2. **Blockchain Verification:**
+   - Submit content for blockchain authentication
+   - Track content modifications
+   - Verify source credibility
 
-### Story Tracking
-- List of trending misinformation stories
-- Spread percentage visualization
-- Geographic impact tracking
-- Story selection and filtering
+3. **Collaborative Fact-Checking:**
+   - Join the fact-checking community
+   - Vote on content credibility
+   - Build reputation through accurate verifications
 
-## Contributing
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
@@ -84,12 +108,26 @@ src/
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License
+## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments
+## 🌟 Acknowledgments
 
-- OpenStreetMap for map tiles
-- Leaflet.js for map functionality
-- D3.js for data visualization
+- Thanks to our community of fact-checkers
+- Special thanks to contributors and maintainers
+- Powered by advanced AI technology and blockchain innovation
+
+## 📞 Contact
+
+- Website: [https://truthguard.com](https://truthguard.com)
+- Email: support@truthguard.com
+- Twitter: [@TruthGuard](https://twitter.com/TruthGuard)
+
+## 🔒 Security
+
+For security concerns, please email security@truthguard.com. We take all security reports seriously.
+
+---
+
+Built with ❤️ by the TruthGuard Team
