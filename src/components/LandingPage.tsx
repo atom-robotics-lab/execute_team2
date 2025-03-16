@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { BlockchainAuthModal } from './BlockchainAuthModal';
 
 interface FeatureCard {
   title: string;
@@ -9,6 +10,7 @@ interface FeatureCard {
     value: string;
     label: string;
   };
+  onClick?: () => void;
 }
 
 interface LandingPageProps {
@@ -31,6 +33,7 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
   const [animatedStats, setAnimatedStats] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showMediaModal, setShowMediaModal] = useState(false);
+  const [showBlockchainModal, setShowBlockchainModal] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -72,7 +75,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "98%",
         label: "Detection Accuracy"
-      }
+      },
+      onClick: () => setShowMediaModal(true)
     },
     {
       title: "Explainable Misinformation Alerts",
@@ -82,7 +86,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "500K+",
         label: "Daily Alerts"
-      }
+      },
+      onClick: () => onFeatureClick("Explainable Misinformation Alerts")
     },
     {
       title: "Collaborative Fact-Checking",
@@ -92,7 +97,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "50K+",
         label: "Active Checkers"
-      }
+      },
+      onClick: () => onFeatureClick("Collaborative Fact-Checking")
     },
     {
       title: "Blockchain Authentication",
@@ -102,7 +108,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "1M+",
         label: "Verified Records"
-      }
+      },
+      onClick: () => setShowBlockchainModal(true)
     },
     {
       title: "Misinformation Heatmap",
@@ -112,7 +119,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "180+",
         label: "Countries Covered"
-      }
+      },
+      onClick: () => onFeatureClick("Misinformation Heatmap")
     },
     {
       title: "Gamified Education",
@@ -122,7 +130,8 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       stats: {
         value: "2M+",
         label: "Active Players"
-      }
+      },
+      onClick: () => onFeatureClick("Gamified Education")
     }
   ];
 
@@ -429,7 +438,7 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
               className={`relative bg-gray-900 rounded-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-${feature.color.split('-')[2]}/20 cursor-pointer overflow-hidden group`}
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
-              onClick={() => onFeatureClick(feature.title)}
+              onClick={feature.onClick}
             >
               {/* Feature Card Content */}
               <div className="relative z-10">
@@ -923,6 +932,12 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
           </div>
         </div>
       )}
+
+      {/* Blockchain Authentication Modal */}
+      <BlockchainAuthModal 
+        isOpen={showBlockchainModal} 
+        onClose={() => setShowBlockchainModal(false)} 
+      />
     </div>
   );
 } 
