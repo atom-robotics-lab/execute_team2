@@ -3,11 +3,13 @@ import { LandingPage } from './components/LandingPage';
 import { MisinformationHeatmap } from './components/MisinformationHeatmap';
 import { GameEducation } from './components/GameEducation';
 import { CollaborativeFactChecking } from './components/CollaborativeFactChecking';
+import { MisinformationAlerts } from './components/misinformation/MisinformationAlerts';
 
 function App() {
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [showGame, setShowGame] = useState(false);
   const [showFactChecking, setShowFactChecking] = useState(false);
+  const [showMisinformationAlerts, setShowMisinformationAlerts] = useState(false);
 
   const handleFeatureClick = (feature: string) => {
     if (feature === "Misinformation Heatmap") {
@@ -16,6 +18,8 @@ function App() {
       setShowGame(true);
     } else if (feature === "Collaborative Fact-Checking") {
       setShowFactChecking(true);
+    } else if (feature === "Explainable Misinformation Alerts") {
+      setShowMisinformationAlerts(true);
     }
   };
 
@@ -29,6 +33,10 @@ function App() {
 
   if (showFactChecking) {
     return <CollaborativeFactChecking onClose={() => setShowFactChecking(false)} />;
+  }
+
+  if (showMisinformationAlerts) {
+    return <MisinformationAlerts onClose={() => setShowMisinformationAlerts(false)} />;
   }
 
   return (

@@ -3,6 +3,8 @@ import { MapContainer, TileLayer, Circle, Popup, ZoomControl, useMap, GeoJSON } 
 import { Map as LeafletMap, geoJSON } from 'leaflet';
 import * as d3 from 'd3';
 import 'leaflet/dist/leaflet.css';
+import { AnalyticsChart } from './AnalyticsChart';
+import { Header } from './ui/Header';
 
 interface MisinformationHeatmapProps {
   onClose: () => void;
@@ -92,163 +94,6 @@ function MapCenterUpdater({ coordinates }: { coordinates?: [number, number] }) {
   return null;
 }
 
-// Analytics Chart Component
-function AnalyticsChart() {
-  const chartRef = useRef<SVGSVGElement>(null);
-  const trendChartRef = useRef<SVGSVGElement>(null);
-
-  useEffect(() => {
-    if (chartRef.current) {
-      const width = 600;
-      const height = 300;
-      const margin = { top: 20, right: 30, bottom: 40, left: 60 };
-
-      const svg = d3.select(chartRef.current)
-        .attr('width', width)
-        .attr('height', height);
-
-      svg.selectAll("*").remove();
-
-      const x = d3.scaleBand()
-        .domain(analyticsData.categories.map(d => d.name))
-        .range([margin.left, width - margin.right])
-        .padding(0.1);
-
-      const y = d3.scaleLinear()
-        .domain([0, 100])
-        .range([height - margin.bottom, margin.top]);
-
-      // Add bars
-      svg.selectAll("rect")
-        .data(analyticsData.categories)
-        .join("rect")
-        .attr("x", d => x(d.name)!)
-        .attr("y", d => y(d.avgSpread))
-        .attr("width", x.bandwidth())
-        .attr("height", d => height - margin.bottom - y(d.avgSpread))
-        .attr("fill", "#ef4444")
-        .attr("opacity", 0.7);
-
-      // Add labels
-      svg.selectAll(".bar-label")
-        .data(analyticsData.categories)
-        .join("text")
-        .attr("class", "bar-label")
-        .attr("x", d => x(d.name)! + x.bandwidth() / 2)
-        .attr("y", d => y(d.avgSpread) - 5)
-        .attr("text-anchor", "middle")
-        .text(d => `${d.avgSpread}%`);
-
-      // Add axes
-      svg.append("g")
-        .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(x))
-        .selectAll("text")
-        .attr("transform", "rotate(-45)")
-        .style("text-anchor", "end");
-
-      svg.append("g")
-        .attr("transform", `translate(${margin.left},0)`)
-        .call(d3.axisLeft(y).ticks(5).tickFormat(d => d + "%"));
-
-      // Add title
-      svg.append("text")
-        .attr("x", width / 2)
-        .attr("y", margin.top)
-        .attr("text-anchor", "middle")
-        .style("font-size", "16px")
-        .text("Average Spread by Category");
-    }
-
-    // Trend Chart
-    if (trendChartRef.current) {
-      const width = 600;
-      const height = 200;
-      const margin = { top: 20, right: 30, bottom: 40, left: 60 };
-
-      const svg = d3.select(trendChartRef.current)
-        .attr('width', width)
-        .attr('height', height);
-
-      svg.selectAll("*").remove();
-
-      const x = d3.scaleTime()
-        .domain(d3.extent(analyticsData.trends, d => new Date(d.date)) as [Date, Date])
-        .range([margin.left, width - margin.right]);
-
-      const y = d3.scaleLinear()
-        .domain([0, d3.max(analyticsData.trends, d => d.count)!])
-        .range([height - margin.bottom, margin.top]);
-
-      // Add line
-      const line = d3.line<typeof analyticsData.trends[0]>()
-        .x(d => x(new Date(d.date)))
-        .y(d => y(d.count));
-
-      svg.append("path")
-        .datum(analyticsData.trends)
-        .attr("fill", "none")
-        .attr("stroke", "#ef4444")
-        .attr("stroke-width", 2)
-        .attr("d", line);
-
-      // Add dots
-      svg.selectAll("circle")
-        .data(analyticsData.trends)
-        .join("circle")
-        .attr("cx", d => x(new Date(d.date)))
-        .attr("cy", d => y(d.count))
-        .attr("r", 4)
-        .attr("fill", "#ef4444");
-
-      // Add axes
-      svg.append("g")
-        .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(x).ticks(7).tickFormat(d3.timeFormat("%b %d") as any));
-
-      svg.append("g")
-        .attr("transform", `translate(${margin.left},0)`)
-        .call(d3.axisLeft(y).ticks(5));
-
-      // Add title
-      svg.append("text")
-        .attr("x", width / 2)
-        .attr("y", margin.top)
-        .attr("text-anchor", "middle")
-        .style("font-size", "16px")
-        .text("Daily Misinformation Trends");
-    }
-  }, []);
-
-  return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold mb-2">Total Stories</h3>
-          <p className="text-3xl font-bold text-red-600">140</p>
-          <p className="text-sm text-gray-500">Last 7 days</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold mb-2">Average Spread</h3>
-          <p className="text-3xl font-bold text-red-600">55%</p>
-          <p className="text-sm text-gray-500">Across all categories</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold mb-2">Most Active Region</h3>
-          <p className="text-3xl font-bold text-red-600">North America</p>
-          <p className="text-sm text-gray-500">45% of total stories</p>
-        </div>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow-sm">
-        <svg ref={chartRef}></svg>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow-sm">
-        <svg ref={trendChartRef}></svg>
-      </div>
-    </div>
-  );
-}
-
 // Add GeoJSON type
 interface CountryFeature {
   type: 'Feature';
@@ -315,17 +160,10 @@ export function MisinformationHeatmap({ onClose }: MisinformationHeatmapProps) {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 p-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Global Misinformation Heatmap</h1>
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Close
-          </button>
-        </div>
-      </div>
+      <Header 
+        title="Global Misinformation Heatmap"
+        onClose={onClose}
+      />
 
       <div className="pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

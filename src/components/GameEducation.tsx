@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Header } from './ui/Header';
 
 interface GameEducationProps {
   onClose: () => void;
@@ -221,8 +222,9 @@ export function GameEducation({ onClose }: GameEducationProps) {
     const basePoints = {
       easy: 100,
       medium: 200,
-      hard: 300
-    }[difficulty];
+      hard: 300,
+      default: 100
+    }[difficulty] || 100;
     
     const streakBonus = Math.floor(currentStreak / 3) * 50;
     return basePoints + streakBonus;
@@ -260,22 +262,13 @@ export function GameEducation({ onClose }: GameEducationProps) {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-red-900 text-white flex flex-col">
       {showConfetti && <canvas ref={confettiRef} className="fixed inset-0 z-50 pointer-events-none" />}
       
-      <div className="fixed top-4 right-4 flex items-center space-x-4 z-40">
-        <button
-          onClick={() => setSoundEnabled(!soundEnabled)}
-          className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-        >
-          {soundEnabled ? '🔊' : '🔇'}
-        </button>
-        <button
-          onClick={onClose}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-        >
-          Exit Game
-        </button>
-      </div>
+      <Header 
+        title="Misinformation Detective"
+        subtitle={`Score: ${score}/${sampleQuestions.length} | Points: ${points}`}
+        onClose={onClose}
+      />
 
-      <div className="flex-1 flex items-center justify-center p-4">
+      <div className="flex-1 flex items-center justify-center p-4 pt-20">
         <div className="max-w-6xl w-full">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-4">Misinformation Detective</h1>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Avatar } from './ui/Avatar';
 import { Tooltip } from './ui/Tooltip';
+import { Header } from './ui/Header';
 
 interface FactCheckingProps {
   onClose: () => void;
@@ -244,24 +245,11 @@ export function CollaborativeFactChecking({ onClose }: FactCheckingProps) {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 p-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Collaborative Fact-Checking</h1>
-            <p className="text-sm text-gray-500">
-              <span className="inline-block animate-pulse mr-2">🟢</span>
-              {totalActiveUsers} fact checkers online
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Close
-          </button>
-        </div>
-      </div>
+      <Header 
+        title="Collaborative Fact-Checking"
+        subtitle={`${totalActiveUsers} fact checkers online`}
+        onClose={onClose}
+      />
 
       {/* Main Content */}
       <div className="pt-20 pb-8">

@@ -417,51 +417,272 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       </div>
 
       {/* Features Grid */}
-      <div id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 scroll-mt-20">
-        <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-16">
-          Comprehensive Protection Features
-        </h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-white mb-4">Powerful Features</h2>
+          <p className="text-xl text-gray-400">Advanced tools to combat misinformation</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <div
               key={index}
-              className={`group relative overflow-hidden rounded-xl p-6 bg-gradient-to-br ${feature.color} transform transition-all duration-300 ease-in-out hover:scale-105 cursor-pointer`}
+              className={`relative bg-gray-900 rounded-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-${feature.color.split('-')[2]}/20 cursor-pointer overflow-hidden group`}
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
-              onClick={() => {
-                if (feature.title === "AI-Powered Media Detection") {
-                  setShowMediaModal(true);
-                } else {
-                  onFeatureClick(feature.title);
-                }
-              }}
+              onClick={() => onFeatureClick(feature.title)}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-black/0 via-black/0 to-black/20 z-0 
-                group-hover:via-black/10 transition-all duration-300"></div>
+              {/* Feature Card Content */}
               <div className="relative z-10">
-                <div className="flex items-start justify-between mb-4">
-                  <span className="text-5xl transform group-hover:scale-110 transition-transform duration-300">
-                    {feature.icon}
-                  </span>
-                  {feature.stats && (
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-white">{feature.stats.value}</p>
-                      <p className="text-sm text-white/80">{feature.stats.label}</p>
-                    </div>
-                  )}
+                <span className="text-4xl mb-4 block">{feature.icon}</span>
+                <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
+                <p className="text-gray-400">{feature.description}</p>
+                {feature.stats && (
+                  <div className="mt-4 flex items-center space-x-2">
+                    <span className="text-2xl font-bold bg-gradient-to-r from-red-500 to-purple-500 bg-clip-text text-transparent">
+                      {feature.stats.value}
+                    </span>
+                    <span className="text-sm text-gray-500">{feature.stats.label}</span>
+                  </div>
+                )}
+              </div>
+              {/* Animated Background */}
+              <div className={`absolute inset-0 bg-gradient-to-r ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Explainable Misinformation Alerts Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-orange-600/10 rounded-3xl"></div>
+        <div className="relative">
+          <div className="text-center mb-16">
+            <span className="text-4xl mb-4 block">⚠️</span>
+            <h2 className="text-4xl font-bold text-white mb-4">Explainable Misinformation Alerts</h2>
+            <p className="text-xl text-gray-400">Understand why content is flagged with detailed evidence and analysis</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all">
+                <div className="flex items-start space-x-4">
+                  <div className="bg-amber-500/20 p-3 rounded-lg">
+                    <span className="text-2xl">🔍</span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-2">Evidence-Based Analysis</h3>
+                    <p className="text-gray-400">Get detailed explanations of detected manipulation patterns, backed by visual evidence and technical analysis.</p>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-white/90">
-                  {feature.title}
-                </h3>
-                <p className="text-white/80 text-sm leading-relaxed group-hover:text-white/70">
-                  {feature.description}
-                </p>
-                <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span className="text-white/90">Explore →</span>
+              </div>
+
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all">
+                <div className="flex items-start space-x-4">
+                  <div className="bg-amber-500/20 p-3 rounded-lg">
+                    <span className="text-2xl">🤝</span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-2">Collaborative Verification</h3>
+                    <p className="text-gray-400">Join a community of fact-checkers to verify content, vote on credibility, and share trusted sources.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all">
+                <div className="flex items-start space-x-4">
+                  <div className="bg-amber-500/20 p-3 rounded-lg">
+                    <span className="text-2xl">🎯</span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-2">Real-Time Alerts</h3>
+                    <p className="text-gray-400">Receive instant notifications about potential misinformation with clear explanations and recommended actions.</p>
+                  </div>
                 </div>
               </div>
             </div>
-          ))}
+
+            <div className="bg-gray-900 rounded-xl p-6 shadow-2xl">
+              <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-2 rounded-t-lg font-semibold">
+                Live Alert Example
+              </div>
+              <div className="space-y-4 p-4">
+                <div className="flex items-start space-x-3">
+                  <div className="bg-red-500/20 p-2 rounded">🚨</div>
+                  <div>
+                    <h4 className="text-white font-medium">High-Risk Manipulation Detected</h4>
+                    <p className="text-gray-400 text-sm">Multiple inconsistencies found in the image</p>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <h5 className="text-white font-medium mb-2">Evidence Found:</h5>
+                  <ul className="space-y-2 text-sm text-gray-400">
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      <span>Lighting inconsistencies in key areas</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      <span>AI generation artifacts detected</span>
+                    </li>
+                    <li className="flex items-center space-x-2">
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      <span>Metadata tampering identified</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <h5 className="text-white font-medium mb-2">Community Verification:</h5>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-400">Credibility Score</span>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-24 bg-gray-700 rounded-full h-2">
+                        <div className="w-1/4 bg-red-500 h-2 rounded-full"></div>
+                      </div>
+                      <span className="text-red-500 font-medium">25%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-4 mt-4">
+                  <button className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg font-medium transition-colors">
+                    View Details
+                  </button>
+                  <button className="flex-1 border border-gray-700 hover:border-gray-600 text-gray-400 hover:text-white py-2 rounded-lg font-medium transition-colors">
+                    Verify Source
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Collaborative Fact-Checking Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-600/10 rounded-3xl"></div>
+        <div className="relative">
+          <div className="text-center mb-16">
+            <span className="text-4xl mb-4 block">🤝</span>
+            <h2 className="text-4xl font-bold text-white mb-4">Collaborative Fact-Checking</h2>
+            <p className="text-xl text-gray-400">Join our global community in verifying content and fighting misinformation</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="bg-gray-900 rounded-xl p-6 shadow-2xl order-2 lg:order-1">
+              <div className="bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-4 py-2 rounded-t-lg font-semibold">
+                Active Verification Example
+              </div>
+              <div className="space-y-4 p-4">
+                <div className="flex items-start space-x-3">
+                  <div className="bg-blue-500/20 p-2 rounded">🔍</div>
+                  <div>
+                    <h4 className="text-white font-medium">Viral Image Under Review</h4>
+                    <p className="text-gray-400 text-sm">Community verification in progress</p>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <h5 className="text-white font-medium mb-2">Verification Status:</h5>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-400">Expert Fact-Checkers</span>
+                      <span className="text-blue-400">12 reviewing</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-400">Community Votes</span>
+                      <span className="text-blue-400">234 submitted</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-400">Trusted Sources</span>
+                      <span className="text-blue-400">8 linked</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-800 rounded-lg p-4">
+                  <h5 className="text-white font-medium mb-2">Community Consensus:</h5>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-400">Credible</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-24 bg-gray-700 rounded-full h-2">
+                          <div className="w-1/4 bg-green-500 h-2 rounded-full"></div>
+                        </div>
+                        <span className="text-green-500 text-sm">25%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-400">Suspicious</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-24 bg-gray-700 rounded-full h-2">
+                          <div className="w-2/3 bg-yellow-500 h-2 rounded-full"></div>
+                        </div>
+                        <span className="text-yellow-500 text-sm">67%</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-400">Fake</span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-24 bg-gray-700 rounded-full h-2">
+                          <div className="w-1/12 bg-red-500 h-2 rounded-full"></div>
+                        </div>
+                        <span className="text-red-500 text-sm">8%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-4 mt-4">
+                  <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition-colors">
+                    Cast Your Vote
+                  </button>
+                  <button className="flex-1 border border-gray-700 hover:border-gray-600 text-gray-400 hover:text-white py-2 rounded-lg font-medium transition-colors">
+                    Add Source
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-8 order-1 lg:order-2">
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all">
+                <div className="flex items-start space-x-4">
+                  <div className="bg-blue-500/20 p-3 rounded-lg">
+                    <span className="text-2xl">👥</span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-2">Community-Driven Verification</h3>
+                    <p className="text-gray-400">Join thousands of fact-checkers in verifying content and building a trusted information ecosystem.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all">
+                <div className="flex items-start space-x-4">
+                  <div className="bg-blue-500/20 p-3 rounded-lg">
+                    <span className="text-2xl">🔗</span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-2">Source Verification</h3>
+                    <p className="text-gray-400">Add and verify trusted sources to support fact-checking efforts and build credibility.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all">
+                <div className="flex items-start space-x-4">
+                  <div className="bg-blue-500/20 p-3 rounded-lg">
+                    <span className="text-2xl">⭐</span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-2">Reputation System</h3>
+                    <p className="text-gray-400">Build your reputation as a trusted fact-checker through accurate verifications and quality contributions.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -533,7 +754,17 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
 
       {/* Media Detection Modal */}
       {showMediaModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowMediaModal(false);
+              setUploadedFile(null);
+              setPreviewUrl('');
+              setAnalysisResult(null);
+            }
+          }}
+        >
           <div className="relative bg-gray-900 rounded-xl max-w-4xl w-full">
             <button 
               onClick={() => {
