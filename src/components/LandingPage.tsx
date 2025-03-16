@@ -8,10 +8,10 @@ interface FeatureCard {
 }
 
 interface LandingPageProps {
-  onHeatmapClick: () => void;
+  onFeatureClick: (feature: string) => void;
 }
 
-export function LandingPage({ onHeatmapClick }: LandingPageProps) {
+export function LandingPage({ onFeatureClick }: LandingPageProps) {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   const features: FeatureCard[] = [
@@ -104,11 +104,7 @@ export function LandingPage({ onHeatmapClick }: LandingPageProps) {
               }`}
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
-              onClick={() => {
-                if (feature.title === "Misinformation Heatmap") {
-                  onHeatmapClick();
-                }
-              }}
+              onClick={() => onFeatureClick(feature.title)}
             >
               <div className="relative z-10">
                 <span className="text-4xl mb-4 block">{feature.icon}</span>
