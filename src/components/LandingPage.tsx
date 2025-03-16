@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface FeatureCard {
   title: string;
@@ -15,10 +15,27 @@ interface LandingPageProps {
   onFeatureClick: (feature: string) => void;
 }
 
+interface AnalysisResult {
+  type: 'authentic' | 'manipulated' | 'ai-generated';
+  confidence: number;
+  details: {
+    label: string;
+    value: number;
+  }[];
+  warnings: string[];
+}
+
 export function LandingPage({ onFeatureClick }: LandingPageProps) {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [animatedStats, setAnimatedStats] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showMediaModal, setShowMediaModal] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,6 +48,20 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const navHeight = 80; // Approximate navbar height
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+  };
 
   const features: FeatureCard[] = [
     {
@@ -95,6 +126,37 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
     }
   ];
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      setAnalysisResult(null);
+    }
+  };
+
+  const simulateAnalysis = () => {
+    setIsAnalyzing(true);
+    // Simulated analysis result after 2 seconds
+    setTimeout(() => {
+      setAnalysisResult({
+        type: Math.random() > 0.5 ? 'authentic' : 'manipulated',
+        confidence: 0.89 + Math.random() * 0.1,
+        details: [
+          { label: 'Manipulation Detection', value: 0.92 },
+          { label: 'GAN Detection', value: 0.88 },
+          { label: 'Metadata Analysis', value: 0.95 },
+        ],
+        warnings: [
+          'Potential metadata inconsistencies detected',
+          'Unusual compression patterns found'
+        ]
+      });
+      setIsAnalyzing(false);
+    }, 2000);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-red-900 overflow-hidden">
       {/* Animated Background */}
@@ -118,8 +180,18 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
                 <span className="text-red-500">TRUTH</span>GUARD
               </h1>
               <div className="hidden md:flex space-x-6">
-                <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-                <a href="#stats" className="text-gray-300 hover:text-white transition-colors">Stats</a>
+                <button 
+                  onClick={() => scrollToSection('features')}
+                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+                >
+                  Features
+                </button>
+                <button 
+                  onClick={() => scrollToSection('stats')}
+                  className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+                >
+                  Stats
+                </button>
                 <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
               </div>
             </div>
@@ -161,11 +233,55 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
             <button className="w-full sm:w-auto bg-gradient-to-r from-red-600 to-red-800 text-white px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-red-500/25">
               Start Protecting Now
             </button>
-            <button className="w-full sm:w-auto border border-white/20 bg-white/10 text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/20 transition-all backdrop-blur-sm">
-              Watch Demo
+            <button 
+              onClick={() => setShowVideoModal(true)}
+              className="w-full sm:w-auto border border-white/20 bg-white/10 text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/20 transition-all backdrop-blur-sm flex items-center justify-center space-x-2"
+            >
+              <span className="text-xl">▶</span>
+              <span>Watch Demo</span>
             </button>
           </div>
         </div>
+
+        {/* Video Modal */}
+        {showVideoModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="relative bg-gray-900 rounded-xl max-w-4xl w-full">
+              <button 
+                onClick={() => setShowVideoModal(false)}
+                className="absolute -top-12 right-0 text-white/80 hover:text-white text-xl p-2"
+              >
+                ✕
+              </button>
+              <div className="aspect-video rounded-t-xl overflow-hidden bg-black">
+                <iframe
+                  className="w-full h-full"
+                  src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0"
+                  title="Product Demo"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-white mb-2">How TruthGuard Works</h3>
+                <p className="text-gray-400">
+                  Watch this quick demo to see how our AI-powered system detects and prevents misinformation in real-time.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <div className="bg-gray-800 rounded-full px-4 py-1 text-sm text-gray-300">
+                    🎯 AI Detection
+                  </div>
+                  <div className="bg-gray-800 rounded-full px-4 py-1 text-sm text-gray-300">
+                    🔄 Real-time Analysis
+                  </div>
+                  <div className="bg-gray-800 rounded-full px-4 py-1 text-sm text-gray-300">
+                    🛡️ Active Protection
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Floating Elements */}
         <div className="absolute top-1/4 left-10 w-20 h-20 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full mix-blend-multiply filter blur-xl animate-float"></div>
@@ -173,7 +289,7 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
       </div>
 
       {/* Stats Section */}
-      <div className="relative py-20 bg-black/30 backdrop-blur-sm">
+      <div id="stats" className="relative py-20 bg-black/30 backdrop-blur-sm scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className={`text-center transform transition-all duration-1000 ${
@@ -204,8 +320,104 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
         </div>
       </div>
 
+      {/* About Section */}
+      <div id="about" className="relative py-24 bg-gradient-to-r from-gray-900 to-black scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-white">
+                Defending Truth in the
+                <span className="block text-red-500">Digital Age</span>
+              </h2>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                At TruthGuard, we're committed to combating the spread of misinformation through innovative technology and community collaboration. Our AI-powered platform combines advanced detection algorithms with human expertise to create a robust defense against digital deception.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-red-600/10 flex items-center justify-center">
+                    <span className="text-2xl">🎯</span>
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">Our Mission</h3>
+                    <p className="text-gray-400">To empower individuals and organizations with tools to identify, verify, and combat misinformation effectively.</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-red-600/10 flex items-center justify-center">
+                    <span className="text-2xl">💫</span>
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">Our Impact</h3>
+                    <p className="text-gray-400">Protected over 50 million users and prevented countless misinformation campaigns across 180+ countries.</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-red-600/10 flex items-center justify-center">
+                    <span className="text-2xl">🤝</span>
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">Our Community</h3>
+                    <p className="text-gray-400">A global network of fact-checkers, researchers, and technology experts working together for truth.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-red-500/10 to-purple-500/10 p-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-purple-500/20 animate-pulse"></div>
+                <div className="relative bg-gray-900 rounded-xl p-8 h-full">
+                  <div className="grid grid-cols-2 gap-6">
+                    {/* First Column */}
+                    <div className="space-y-6">
+                      <div className="bg-gradient-to-br from-red-500/10 to-purple-500/10 rounded-lg p-4 transform hover:scale-105 transition-transform duration-300 hover:shadow-lg hover:shadow-red-500/10">
+                        <h4 className="text-red-500 text-2xl font-bold">98%</h4>
+                        <p className="text-gray-400 text-sm">Detection Accuracy</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-red-500/10 to-purple-500/10 rounded-lg p-4 transform hover:scale-105 transition-transform duration-300 hover:shadow-lg hover:shadow-red-500/10">
+                        <h4 className="text-red-500 text-2xl font-bold">24/7</h4>
+                        <p className="text-gray-400 text-sm">Active Defense</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-red-500/10 to-purple-500/10 rounded-lg p-4 transform hover:scale-105 transition-transform duration-300 hover:shadow-lg hover:shadow-red-500/10">
+                        <h4 className="text-red-500 text-2xl font-bold">500K+</h4>
+                        <p className="text-gray-400 text-sm">Daily Scans</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-red-500/10 to-purple-500/10 rounded-lg p-4 transform hover:scale-105 transition-transform duration-300 hover:shadow-lg hover:shadow-red-500/10">
+                        <h4 className="text-red-500 text-2xl font-bold">1M+</h4>
+                        <p className="text-gray-400 text-sm">Threats Blocked</p>
+                      </div>
+                    </div>
+                    {/* Second Column */}
+                    <div className="space-y-6">
+                      <div className="bg-gradient-to-br from-red-500/10 to-purple-500/10 rounded-lg p-4 transform hover:scale-105 transition-transform duration-300 hover:shadow-lg hover:shadow-red-500/10">
+                        <h4 className="text-red-500 text-2xl font-bold">50M+</h4>
+                        <p className="text-gray-400 text-sm">Users Protected</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-red-500/10 to-purple-500/10 rounded-lg p-4 transform hover:scale-105 transition-transform duration-300 hover:shadow-lg hover:shadow-red-500/10">
+                        <h4 className="text-red-500 text-2xl font-bold">180+</h4>
+                        <p className="text-gray-400 text-sm">Countries</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-red-500/10 to-purple-500/10 rounded-lg p-4 transform hover:scale-105 transition-transform duration-300 hover:shadow-lg hover:shadow-red-500/10">
+                        <h4 className="text-red-500 text-2xl font-bold">10K+</h4>
+                        <p className="text-gray-400 text-sm">Expert Contributors</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-red-500/10 to-purple-500/10 rounded-lg p-4 transform hover:scale-105 transition-transform duration-300 hover:shadow-lg hover:shadow-red-500/10">
+                        <h4 className="text-red-500 text-2xl font-bold">5B+</h4>
+                        <p className="text-gray-400 text-sm">Data Points Analyzed</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-r from-red-500/30 to-purple-500/30 rounded-full filter blur-xl animate-blob"></div>
+              <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-gradient-to-r from-blue-500/30 to-cyan-500/30 rounded-full filter blur-xl animate-blob animation-delay-2000"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Features Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 scroll-mt-20">
         <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-16">
           Comprehensive Protection Features
         </h2>
@@ -216,7 +428,13 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
               className={`group relative overflow-hidden rounded-xl p-6 bg-gradient-to-br ${feature.color} transform transition-all duration-300 ease-in-out hover:scale-105 cursor-pointer`}
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
-              onClick={() => onFeatureClick(feature.title)}
+              onClick={() => {
+                if (feature.title === "AI-Powered Media Detection") {
+                  setShowMediaModal(true);
+                } else {
+                  onFeatureClick(feature.title);
+                }
+              }}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-black/0 via-black/0 to-black/20 z-0 
                 group-hover:via-black/10 transition-all duration-300"></div>
@@ -312,6 +530,168 @@ export function LandingPage({ onFeatureClick }: LandingPageProps) {
           </div>
         </div>
       </footer>
+
+      {/* Media Detection Modal */}
+      {showMediaModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="relative bg-gray-900 rounded-xl max-w-4xl w-full">
+            <button 
+              onClick={() => {
+                setShowMediaModal(false);
+                setUploadedFile(null);
+                setPreviewUrl('');
+                setAnalysisResult(null);
+              }}
+              className="absolute -top-12 right-0 text-white/80 hover:text-white text-xl p-2"
+            >
+              ✕
+            </button>
+            <div className="p-6">
+              <h3 className="text-2xl font-bold text-white mb-4">
+                AI-Powered Media Detection
+              </h3>
+              <p className="text-gray-400 mb-6">
+                Upload an image or video to analyze for potential manipulation or AI generation.
+                Our advanced algorithms will detect deepfakes and other forms of digital manipulation.
+              </p>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Upload Section */}
+                <div className="space-y-6">
+                  <div 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center cursor-pointer
+                    hover:border-red-500/50 transition-colors"
+                  >
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileUpload}
+                      accept="image/*,video/*"
+                      className="hidden"
+                    />
+                    {!uploadedFile ? (
+                      <div className="space-y-4">
+                        <div className="w-16 h-16 mx-auto rounded-full bg-red-600/10 flex items-center justify-center">
+                          <span className="text-3xl">📤</span>
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">Drop your file here or click to upload</p>
+                          <p className="text-sm text-gray-400 mt-2">Supports images and videos up to 50MB</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {previewUrl && (
+                          <img 
+                            src={previewUrl} 
+                            alt="Preview" 
+                            className="max-h-48 mx-auto rounded-lg"
+                          />
+                        )}
+                        <p className="text-white font-medium">{uploadedFile.name}</p>
+                        <p className="text-sm text-gray-400">
+                          {(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {uploadedFile && !isAnalyzing && !analysisResult && (
+                    <button
+                      onClick={simulateAnalysis}
+                      className="w-full bg-gradient-to-r from-red-600 to-red-800 text-white px-6 py-3 rounded-lg
+                      font-semibold transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-red-500/25"
+                    >
+                      Analyze Media
+                    </button>
+                  )}
+
+                  {isAnalyzing && (
+                    <div className="text-center py-4">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto"></div>
+                      <p className="text-white mt-4">Analyzing your media...</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Results Section */}
+                {analysisResult && (
+                  <div className="bg-gray-800/50 rounded-xl p-6 space-y-6">
+                    <div className="text-center">
+                      <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4
+                        ${analysisResult.type === 'authentic' ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
+                        <span className="text-3xl">
+                          {analysisResult.type === 'authentic' ? '✅' : '⚠️'}
+                        </span>
+                      </div>
+                      <h4 className={`text-xl font-bold mb-2
+                        ${analysisResult.type === 'authentic' ? 'text-green-500' : 'text-red-500'}`}>
+                        {analysisResult.type === 'authentic' ? 'Authentic Media' : 'Potential Manipulation Detected'}
+                      </h4>
+                      <p className="text-gray-400">
+                        {(analysisResult.confidence * 100).toFixed(1)}% confidence
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      {analysisResult.details.map((detail, index) => (
+                        <div key={index}>
+                          <div className="flex justify-between text-sm mb-1">
+                            <span className="text-gray-400">{detail.label}</span>
+                            <span className="text-white">{(detail.value * 100).toFixed(1)}%</span>
+                          </div>
+                          <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-1000"
+                              style={{ width: `${detail.value * 100}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {analysisResult.warnings.length > 0 && (
+                      <div className="bg-red-500/10 rounded-lg p-4">
+                        <h5 className="text-white font-semibold mb-2">Warnings</h5>
+                        <ul className="space-y-2">
+                          {analysisResult.warnings.map((warning, index) => (
+                            <li key={index} className="text-sm text-red-400 flex items-center">
+                              <span className="mr-2">⚠️</span>
+                              {warning}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-gray-800">
+                <h4 className="text-white font-semibold mb-4">How it works</h4>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-gray-800/50 rounded-lg p-4">
+                    <div className="text-2xl mb-2">🔍</div>
+                    <h5 className="text-white font-medium mb-2">Deepfake Detection</h5>
+                    <p className="text-sm text-gray-400">Advanced neural networks analyze facial features and movement patterns</p>
+                  </div>
+                  <div className="bg-gray-800/50 rounded-lg p-4">
+                    <div className="text-2xl mb-2">🧬</div>
+                    <h5 className="text-white font-medium mb-2">GAN Analysis</h5>
+                    <p className="text-sm text-gray-400">Identifies artifacts and patterns typical of AI-generated content</p>
+                  </div>
+                  <div className="bg-gray-800/50 rounded-lg p-4">
+                    <div className="text-2xl mb-2">📊</div>
+                    <h5 className="text-white font-medium mb-2">Forensic Analysis</h5>
+                    <p className="text-sm text-gray-400">Examines metadata and compression patterns for manipulation signs</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
