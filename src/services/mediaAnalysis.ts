@@ -1,13 +1,22 @@
 import * as tf from '@tensorflow/tfjs';
+import { analyzeMisinformation } from './misinformationAnalysis';
+import { MisinformationDetail } from '../types/misinformation';
 
 export interface AnalysisResult {
   isManipulated: boolean;
   confidence: number;
   detectionMethod: string;
+  manipulatedRegions?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }[];
   additionalInfo?: {
     key: string;
     value: string;
   }[];
+  misinformationDetails?: MisinformationDetail[];
 }
 
 async function loadImage(file: File): Promise<HTMLImageElement> {
@@ -52,6 +61,9 @@ export async function analyzeMedia(file: File): Promise<AnalysisResult> {
       const endTime = performance.now();
       const processingTime = ((endTime - startTime) / 1000).toFixed(2);
 
+      // Get misinformation analysis
+      const misinformationDetails = await analyzeMisinformation(file, randomPrediction);
+
       return {
         isManipulated: randomPrediction > 0.5,
         confidence: randomPrediction,
@@ -60,7 +72,8 @@ export async function analyzeMedia(file: File): Promise<AnalysisResult> {
           { key: "Processing Time", value: `${processingTime} seconds` },
           { key: "Image Size", value: `${image.width}x${image.height}` },
           { key: "File Type", value: file.type },
-        ]
+        ],
+        misinformationDetails
       };
     } else if (file.type.startsWith('video/')) {
       // For video analysis, we would:
@@ -68,15 +81,18 @@ export async function analyzeMedia(file: File): Promise<AnalysisResult> {
       // 2. Analyze each frame
       // 3. Combine results
       
-      // For now, return simulated results
+      const randomPrediction = Math.random();
+      const misinformationDetails = await analyzeMisinformation(file, randomPrediction);
+
       return {
-        isManipulated: Math.random() > 0.5,
-        confidence: Math.random(),
+        isManipulated: randomPrediction > 0.5,
+        confidence: randomPrediction,
         detectionMethod: "Video Frame Analysis",
         additionalInfo: [
           { key: "File Type", value: file.type },
           { key: "Analysis Type", value: "Frame-by-frame detection" }
-        ]
+        ],
+        misinformationDetails
       };
     }
 

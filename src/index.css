@@ -18,6 +18,82 @@
   }
   
   .btn-primary {
-    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 hover:scale-105 transform transition-transform duration-200;
   }
+
+  .upload-zone {
+    @apply relative p-8 border-2 border-dashed rounded-lg transition-all duration-200 cursor-pointer hover:border-red-500 hover:bg-red-50;
+  }
+
+  .upload-zone-dragging {
+    @apply border-red-500 bg-red-50;
+  }
+}
+
+.border-primary-500 {
+  border-color: rgb(239, 68, 68);
+}
+
+.bg-primary-50 {
+  background-color: rgb(254, 242, 242);
+}
+
+.border-b-2.border-primary-500 {
+  border-bottom-color: rgb(239, 68, 68);
+}
+
+/* Alert animations */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.alert-enter {
+  animation: slideIn 0.3s ease-out;
+}
+
+.alert-exit {
+  animation: slideOut 0.3s ease-in;
+}
+
+/* Upload component styles */
+.upload-container {
+  @apply max-w-xl mx-auto p-6 bg-white rounded-lg shadow-lg;
+}
+
+.upload-icon {
+  @apply mx-auto h-12 w-12 text-gray-400 transition-colors duration-200;
+}
+
+.upload-text {
+  @apply mt-2 text-sm text-gray-600;
+}
+
+.upload-subtext {
+  @apply mt-1 text-xs text-gray-500;
+}
+
+.upload-loading {
+  @apply absolute inset-0 bg-black/10 backdrop-blur-sm rounded-lg flex items-center justify-center;
+}
+
+.upload-loading-spinner {
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-red-500;
 }
